@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}classBook{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <style>
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 80%;
+        }
+        .profile-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            min-width: 240px;
+            background: #1a1f2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .profile-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-[#030712] min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-[#0a0f1e] shadow-2xl border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-2 group">
+                        <span class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                            class<span class="text-blue-400">Book</span>
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation - Only show if authenticated -->
+                {% if user.is_authenticated %}
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{% url 'home' %}" 
+                       class="nav-link {% if request.resolver_match.url_name == 'home' %}active text-blue-400{% else %}text-gray-300{% endif %} hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium">
+                        Home
+                    </a>
+                    <a href="{% url 'about:about' %}" 
+                       class="nav-link {% if 'about' in request.path %}active text-blue-400{% else %}text-gray-300{% endif %} hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium">
+                        About
+                    </a>
+                    <a href="{% url 'clsbook:clsbook' %}" 
+                       class="nav-link {% if 'clsbook' in request.path %}active text-blue-400{% else %}text-gray-300{% endif %} hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium">
+                        Class Book
+                    </a>
+                    <a href="{% url 'stdadd:stdadder' %}" 
+                       class="nav-link {% if 'stdadd' in request.path %}active text-blue-400{% else %}text-gray-300{% endif %} hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium">
+                        Student Add
+                    </a>
+                    <a href="{% url 'studentviewer:studentviewerhome' %}" 
+                       class="nav-link {% if 'studentviewer' in request.path or 'viewer' in request.path %}active text-blue-400{% else %}text-gray-300{% endif %} hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium">
+                        Student View
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Auth Section -->
+                <div class="hidden md:flex items-center">
+                    {% if user.is_authenticated %}
+                        <div class="relative">
+                            <!-- Profile Avatar Button -->
+                            <button onclick="toggleProfileDropdown()" class="profile-avatar w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-blue-500/30 hover:ring-blue-500/50 transition-all transform hover:scale-110">
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name.0|upper }}
+                                {% elif user.username %}
+                                    {{ user.username.0|upper }}
+                                {% else %}
+                                    U
+                                {% endif %}
+                            </button>
+
+                            <!-- Profile Dropdown -->
+                            <div id="profileDropdown" class="profile-dropdown">
+                                <div class="p-4 border-b border-gray-700/50">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="profile-avatar w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                                            {% if user.first_name and user.last_name %}
+                                                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                                            {% elif user.first_name %}
+                                                {{ user.first_name.0|upper }}
+                                            {% elif user.username %}
+                                                {{ user.username.0|upper }}
+                                            {% else %}
+                                                U
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-white font-semibold text-sm">{{ user.get_full_name|default:user.username }}</p>
+                                            <p class="text-gray-400 text-xs truncate">{{ user.email }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-2">
+                                    <a href="{% url 'account_logout' %}" 
+                                       class="flex items-center space-x-2 w-full px-3 py-2.5 text-left text-red-400 hover:bg-red-600/10 rounded-lg transition-all group">
+                                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        <span class="font-medium">Logout</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center space-x-3">
+                            <a href="{% url 'account_login' %}" 
+                               class="text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800/50 transition-all text-sm font-medium">
+                                Sign In
+                            </a>
+                            <a href="{% url 'account_signup' %}" 
+                               class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all text-sm font-medium shadow-lg hover:shadow-blue-500/30 transform hover:scale-105">
+                                Sign Up
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" 
+                            class="text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800/50 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-[#0f1420] border-t border-gray-800/50">
+            <div class="px-4 py-4 space-y-1">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'home' %}" 
+                       class="block {% if request.resolver_match.url_name == 'home' %}bg-blue-600/20 text-blue-400 border-l-4 border-blue-400{% else %}text-gray-300{% endif %} hover:bg-gray-800/50 hover:text-blue-400 py-3 px-4 rounded-r-lg transition-all">
+                        Home
+                    </a>
+                    <a href="{% url 'about:about' %}" 
+                       class="block {% if 'about' in request.path %}bg-blue-600/20 text-blue-400 border-l-4 border-blue-400{% else %}text-gray-300{% endif %} hover:bg-gray-800/50 hover:text-blue-400 py-3 px-4 rounded-r-lg transition-all">
+                        About
+                    </a>
+                    <a href="{% url 'clsbook:clsbook' %}" 
+                       class="block {% if 'clsbook' in request.path %}bg-blue-600/20 text-blue-400 border-l-4 border-blue-400{% else %}text-gray-300{% endif %} hover:bg-gray-800/50 hover:text-blue-400 py-3 px-4 rounded-r-lg transition-all">
+                        Class Book
+                    </a>
+                    <a href="{% url 'stdadd:stdadder' %}" 
+                       class="block {% if 'stdadd' in request.path %}bg-blue-600/20 text-blue-400 border-l-4 border-blue-400{% else %}text-gray-300{% endif %} hover:bg-gray-800/50 hover:text-blue-400 py-3 px-4 rounded-r-lg transition-all">
+                        Student Add
+                    </a>
+                    <a href="{% url 'studentviewer:studentviewerhome' %}" 
+                       class="block {% if 'studentviewer' in request.path or 'viewer' in request.path %}bg-blue-600/20 text-blue-400 border-l-4 border-blue-400{% else %}text-gray-300{% endif %} hover:bg-gray-800/50 hover:text-blue-400 py-3 px-4 rounded-r-lg transition-all">
+                        Student View
+                    </a>
+                    
+                    <div class="border-t border-gray-800/50 pt-4 mt-4">
+                        <div class="flex items-center space-x-3 mb-4 bg-gray-800/30 rounded-xl p-3">
+                            <div class="profile-avatar w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg text-lg">
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name.0|upper }}
+                                {% elif user.username %}
+                                    {{ user.username.0|upper }}
+                                {% else %}
+                                    U
+                                {% endif %}
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-white font-semibold">{{ user.get_full_name|default:user.username }}</p>
+                                <p class="text-gray-400 text-xs">{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'account_logout' %}" 
+                           class="flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all font-medium shadow-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="space-y-2">
+                        <a href="{% url 'account_login' %}" 
+                           class="block w-full text-center bg-gray-800/50 text-white py-3 rounded-lg hover:bg-gray-800 transition-all font-medium">
+                            Sign In
+                        </a>
+                        <a href="{% url 'account_signup' %}" 
+                           class="block w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                            Sign Up
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0f1e] border-t border-gray-900/50 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-400 text-sm font-medium">classBook © 2025</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('mobileMenu');
+            const dropdown = document.getElementById('profileDropdown');
+            const menuButton = event.target.closest('button[onclick="toggleMobileMenu()"]');
+            const profileButton = event.target.closest('button[onclick="toggleProfileDropdown()"]');
+            
+            // Close mobile menu if clicked outside
+            if (!menu.contains(event.target) && !menuButton && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+
+            // Close profile dropdown if clicked outside
+            if (!dropdown.contains(event.target) && !profileButton && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

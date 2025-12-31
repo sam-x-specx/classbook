@@ -1,0 +1,297 @@
+{% extends "home/base.html" %}
+{% block content %}
+<!-- Centered Container with Max Width -->
+<div class="min-h-screen py-8 px-4">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header Section -->
+        <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Teacher Dashboard</h1>
+                    <p class="text-gray-400">Manage your class books and student records</p>
+                    <p class="text-sm text-blue-400 mt-1">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                        </svg>
+                        {{ user.email }}
+                    </p>
+                </div>
+                <a href="{% url 'clsbook:create' %}" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create New Class Book
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Total Classes -->
+            <div class="bg-gradient-to-br from-gray-800 to-gray-800/50 border border-gray-700/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wide">Total Classes</p>
+                        <p class="text-4xl font-bold text-white mt-3">{{ unique_classes_count }}</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-2xl shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Teachers -->
+            <div class="bg-gradient-to-br from-gray-800 to-gray-800/50 border border-gray-700/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wide">Active Teachers</p>
+                        <p class="text-4xl font-bold text-white mt-3">{{ unique_teachers_count }}</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-600 to-green-700 p-4 rounded-2xl shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Sections -->
+            <div class="bg-gradient-to-br from-gray-800 to-gray-800/50 border border-gray-700/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm font-medium uppercase tracking-wide">Total Sections</p>
+                        <p class="text-4xl font-bold text-white mt-3">{{ unique_sections_count }}</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-600 to-purple-700 p-4 rounded-2xl shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Classes Tags -->
+        {% if unique_classes %}
+        <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></span>
+                Your Classes
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                {% for class_name in unique_classes %}
+                <span class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600/30 to-blue-700/30 border border-blue-500/50 text-blue-300 rounded-xl text-sm font-semibold hover:from-blue-600/40 hover:to-blue-700/40 transition-all duration-200 hover:scale-105 transform shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    {{ class_name }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Class Books Table -->
+        <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl">
+            <!-- Table Header with Search -->
+            <div class="px-6 py-5 border-b border-gray-700/50 bg-gray-800/30">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center">
+                            <span class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></span>
+                            Your Class Books
+                        </h2>
+                        <p class="text-gray-400 text-sm mt-1 ml-7">Manage and organize your class books</p>
+                    </div>
+                    
+                    <!-- Search/Filter Bar -->
+                    <div class="flex gap-3 flex-wrap">
+                        <div class="relative flex-1 min-w-[250px]">
+                            <input type="text" id="searchInput" 
+                                   placeholder="Search by class, section, or teacher..."
+                                   class="w-full pl-11 pr-4 py-3 text-sm text-white bg-gray-700/50 border border-gray-600/50 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all backdrop-blur-sm">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <button onclick="clearSearch()" class="px-5 py-3 text-sm font-semibold text-gray-300 bg-gray-700/50 hover:bg-gray-600/50 rounded-xl transition-all border border-gray-600/50 hover:scale-105 transform">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-700/50">
+                    <thead class="bg-gray-900/50">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Class
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Section
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Teacher Name
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700/30" id="tableBody">
+                        {% for cb in classbooks %}
+                        <tr class="hover:bg-gray-700/30 transition-all duration-200 table-row backdrop-blur-sm" 
+                            data-class="{{ cb.class_name|lower }}" 
+                            data-section="{{ cb.section|lower }}" 
+                            data-teacher="{{ cb.teacher_name|lower }}"
+                            data-email="{{ cb.teacher_email|lower }}">
+                            <td class="px-6 py-5 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+                                        <span class="text-white font-bold text-sm">{{ cb.class_name|slice:":2"|upper }}</span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-semibold text-white">{{ cb.class_name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5 whitespace-nowrap">
+                                <span class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-600/40 to-purple-700/40 border border-purple-500/50 text-purple-200 shadow-md">
+                                    {{ cb.section }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-5 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <div class="relative">
+                                        <span class="flex h-3 w-3">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500 shadow-lg"></span>
+                                        </span>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-300">{{ cb.teacher_name }}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5 whitespace-nowrap">
+                                <div class="flex items-center gap-2 text-sm text-gray-400">
+                                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                    </svg>
+                                    {{ cb.teacher_email|lower }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-5 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{% url 'clsbook:reset' cb.id %}" class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-all px-4 py-2 rounded-xl hover:bg-blue-500/10 group" title="Reset Password">
+                                        <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                                        </svg>
+                                        <span class="hidden sm:inline font-semibold">Reset</span>
+                                    </a>
+                                    <a href="{% url 'clsbook:delete' cb.id %}" class="inline-flex items-center gap-2 text-red-400 hover:text-red-300 transition-all px-4 py-2 rounded-xl hover:bg-red-500/10 group" title="Delete Class Book" onclick="return confirm('Are you sure you want to delete this class book?');">
+                                        <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        <span class="hidden sm:inline font-semibold">Delete</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="emptyState">
+                            <td colspan="5" class="px-6 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="bg-gray-700/30 p-6 rounded-2xl mb-4">
+                                        <svg class="w-20 h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-gray-300 text-xl font-bold mb-2">No class books found</p>
+                                    <p class="text-gray-500 text-sm mb-6">Get started by creating your first class book</p>
+                                    <a href="{% url 'clsbook:create' %}" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-all shadow-lg hover:scale-105 transform">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Create Class Book
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr id="noResults" class="hidden">
+                            <td colspan="5" class="px-6 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="bg-gray-700/30 p-6 rounded-2xl mb-4">
+                                        <svg class="w-20 h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-gray-300 text-xl font-bold mb-2">No matching results found</p>
+                                    <p class="text-gray-500 text-sm">Try adjusting your search criteria</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search/Filter Script -->
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('tableBody');
+    const noResults = document.getElementById('noResults');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        const rows = tableBody.querySelectorAll('.table-row');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const className = row.dataset.class;
+            const section = row.dataset.section;
+            const teacher = row.dataset.teacher;
+            const email = row.dataset.email;
+            
+            const matches = className.includes(searchTerm) || 
+                          section.includes(searchTerm) || 
+                          teacher.includes(searchTerm) ||
+                          email.includes(searchTerm);
+            
+            if (matches) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        if (visibleCount === 0 && rows.length > 0) {
+            noResults.classList.remove('hidden');
+        } else {
+            noResults.classList.add('hidden');
+        }
+    });
+    
+    function clearSearch() {
+        searchInput.value = '';
+        const rows = tableBody.querySelectorAll('.table-row');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        noResults.classList.add('hidden');
+    }
+</script>
+{% endblock %}
