@@ -18,3 +18,5 @@ class ClsbookConfig(AppConfig):
 
         # Replace default signup form
         app_settings.FORMS['signup'] = TeacherSignupForm
+
+        

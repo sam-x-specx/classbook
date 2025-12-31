@@ -176,7 +176,7 @@ class StudentForm(forms.ModelForm):
 
 
 # Secret key for teacher registration
-SECRET_KEY = "" # Add secrect key
+SECRET_KEY = "CLASEBOOK20PB"
 User = get_user_model()
 
 class TeacherSignupForm(SignupForm):

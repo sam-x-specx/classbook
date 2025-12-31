@@ -79,9 +79,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'example@gmail.com'  # Your email
-EMAIL_HOST_PASSWORD = 'abcd efgh ijkl mnyp'  # Use App Password!
-DEFAULT_FROM_EMAIL = 'example@gmail.com' # Your email
+EMAIL_HOST_USER = 'sam.sahoo2005@gmail.com'  # Your email
+EMAIL_HOST_PASSWORD = 'uwjl zrxs iogv cglw'  # Use App Password!
+DEFAULT_FROM_EMAIL = 'sam.sahoo2005@gmail.com' # Your email
 
 # Custom signup form with secret key
 ACCOUNT_FORMS = {
@@ -128,7 +128,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'classbook',
         'USER': 'postgres',
-        'PASSWORD': '', # PGAdmin password
+        'PASSWORD': 'Samx@7sam', # PGAdmin password
         'HOST': 'localhost',
         'PORT': '5432',
     }
